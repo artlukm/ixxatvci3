@@ -29,15 +29,19 @@ import (
 	"unsafe"
 )
 
-//SelectDevice USB-to-CAN device select dialog.
-//assignnumber - number to assign to the device.
+func Hi() {
+	fmt.Println("Hello")
+}
+
+// SelectDevice USB-to-CAN device select dialog.
+// assignnumber - number to assign to the device.
 // vcierr is 0 if there are no errors.
 func SelectDevice(assignnumber uint8) (vcierr uint32) {
 	return selectDevice(true, assignnumber)
 }
 
-//OpenDevice opens first USB-to-CAN device found.
-//assignnumber - number to assign to the device.
+// OpenDevice opens first USB-to-CAN device found.
+// assignnumber - number to assign to the device.
 // vcierr is 0 if there are no errors.
 func OpenDevice(assignnumber uint8) (vcierr uint32) {
 	return selectDevice(false, assignnumber)
@@ -57,15 +61,18 @@ func selectDevice(userselect bool, assignnumber uint8) (vcierr uint32) {
 	return
 }
 
-/*SetOperatingMode set operating mode at device with number "devnum".
+/*
+SetOperatingMode set operating mode at device with number "devnum".
 Call it after SelectDevice but before OpenChannel.
 11-bit mode is a default. Comma is a separator in opmode string.
 opmode values:
+
 	"11bit" or "standard" or "base",
 	"29bit" or "extended",
 	"err" or "errframe",
 	"listen" or "listenonly" or "listonly",
 	"low" or "lowspeed"
+
 // vcierr is 0 if there are no errors.
 */
 func SetOperatingMode(devnum uint8, opmode string) (vcierr uint32) {
@@ -94,10 +101,10 @@ func SetOperatingMode(devnum uint8, opmode string) (vcierr uint32) {
 	return
 }
 
-//OpenChannel opens a channel on a previously opened device with devnum number, and btr0 and btr1 speed parameters.
-//25 kbps is 0x1F 0x16.
-//125 кб/с is 0x03 0x1C.
-//vcierr is 0 if there are no errors.
+// OpenChannel opens a channel on a previously opened device with devnum number, and btr0 and btr1 speed parameters.
+// 25 kbps is 0x1F 0x16.
+// 125 кб/с is 0x03 0x1C.
+// vcierr is 0 if there are no errors.
 func OpenChannel(devnum uint8, btr0 uint8, btr1 uint8) (vcierr uint32) {
 	// HRESULT CAN_VCI3_OpenConnection(UINT8 uDevNum, UINT8 uBtr0, UINT8 uBtr1);
 	ret := C.CAN_VCI3_OpenConnection(
@@ -167,7 +174,7 @@ func GetStatus(devnum uint8) (status CANChanStatus, vcierr uint32) {
 	return
 }
 
-//GetErrorText returns VCI error text by code
+// GetErrorText returns VCI error text by code
 func GetErrorText(vcierr uint32) string {
 	//void CAN_VCI3_FormatError(HRESULT hrError, PCHAR pszText, UINT32 dwSize)
 	buf := make([]C.char, vciMaxErrStrLen)
@@ -179,7 +186,7 @@ func GetErrorText(vcierr uint32) string {
 	return result
 }
 
-//CloseDevice close channel and free device with number "devnum".
+// CloseDevice close channel and free device with number "devnum".
 func CloseDevice(devnum uint8) (vcierr uint32) {
 	// HRESULT CAN_VCI3_CloseDevice(UINT8 uDevNum);
 	ret := C.CAN_VCI3_CloseDevice(C.uchar(devnum))
@@ -222,7 +229,7 @@ func OpenChannelDetectBitrate(devnum uint8, timeout time.Duration, bitrate []Bit
 	return
 }
 
-//see VCI canControlDetectBitrate
+// see VCI canControlDetectBitrate
 func openChannelDetectBitrate(devnum uint8, timeoutMs uint16, arrayBtr0 []byte, arrayBtr1 []byte) (vcierr uint32, indexArray int32) {
 
 	len1 := len(arrayBtr0)

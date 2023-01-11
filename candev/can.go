@@ -6,10 +6,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/amdf/ixxatvci3"
+	"github.com/engaziwayo/ixxatvci3"
 )
 
-//Device is a USB-to-CAN device type
+// Device is a USB-to-CAN device type
 type Device struct {
 	number                 uint8
 	stop                   bool
@@ -26,7 +26,7 @@ type Device struct {
 	RcvBackgroundNoData    uint
 }
 
-//Message is a CAN message
+// Message is a CAN message
 type Message struct {
 	ID   uint32
 	Rtr  bool
@@ -62,7 +62,7 @@ func (dev *Device) canReaderThread() {
 	}
 }
 
-//nonblocking background reading
+// nonblocking background reading
 func (dev *Device) canBackgroundReaderThread() {
 	for !dev.stop {
 		if dev.bReadCANBackground {
@@ -79,13 +79,13 @@ func (dev *Device) canBackgroundReaderThread() {
 	}
 }
 
-//GetMsgByID get msg from CAN with id
+// GetMsgByID get msg from CAN with id
 func (dev *Device) GetMsgByID(id uint32, timeout time.Duration) (msg Message, err error) {
 	msg, err = dev.GetMsgByIDList(map[uint32]bool{id: true}, timeout)
 	return
 }
 
-//GetMsgByIDList waits for msg from CAN with id list
+// GetMsgByIDList waits for msg from CAN with id list
 func (dev *Device) GetMsgByIDList(idlist map[uint32]bool, timeout time.Duration) (msg Message, err error) {
 	if nil == dev {
 		err = fmt.Errorf("%s", "Device == nil")
@@ -125,7 +125,7 @@ func (dev *Device) enableBackgroundCAN() {
 	dev.bReadCANBackground = true
 }
 
-//GetMsgByIDAndSize waits for msg from CAN with id and size
+// GetMsgByIDAndSize waits for msg from CAN with id and size
 func (dev *Device) GetMsgByIDAndSize(id uint32, size uint8, timeout time.Duration) (msg Message, err error) {
 	if nil == dev {
 		err = fmt.Errorf("%s", "Device == nil")
@@ -156,7 +156,7 @@ func (dev *Device) GetMsgByIDAndSize(id uint32, size uint8, timeout time.Duratio
 	return
 }
 
-//GetMsgRTR waits for msg from CAN with id and RTR flag set
+// GetMsgRTR waits for msg from CAN with id and RTR flag set
 func (dev *Device) GetMsgRTR(id uint32, timeout time.Duration) (ok bool, err error) {
 	if nil == dev {
 		err = fmt.Errorf("%s", "Device == nil")
@@ -187,7 +187,7 @@ func (dev *Device) GetMsgRTR(id uint32, timeout time.Duration) (ok bool, err err
 	return
 }
 
-//Run starts receiving
+// Run starts receiving
 func (dev *Device) Run() {
 	go dev.canReaderThread()
 	go dev.canBackgroundReaderThread()
@@ -201,8 +201,8 @@ func (dev *Device) deviceInit(devNum uint8) {
 	dev.canAdditionalChannels = make(map[uint]chan Message)
 }
 
-//Init first USB-to-CAN device found
-//btr0, btr1 - CAN speed register values.
+// Init first USB-to-CAN device found
+// btr0, btr1 - CAN speed register values.
 func (dev *Device) Init(btr0, btr1 uint8) (err error) {
 	if nil == dev {
 		err = fmt.Errorf("%s", "null ptr")
@@ -216,9 +216,9 @@ func (dev *Device) Init(btr0, btr1 uint8) (err error) {
 	return
 }
 
-//InitSelect shows device selection dialog and initializes selected deviсe.
-//devNum - device number to assign
-//btr0, btr1 - CAN speed register values.
+// InitSelect shows device selection dialog and initializes selected deviсe.
+// devNum - device number to assign
+// btr0, btr1 - CAN speed register values.
 func (dev *Device) InitSelect(devNum, btr0, btr1 uint8) (err error) {
 	if nil == dev {
 		err = fmt.Errorf("%s", "null ptr")
@@ -232,11 +232,11 @@ func (dev *Device) InitSelect(devNum, btr0, btr1 uint8) (err error) {
 	return
 }
 
-//InitSelectDetectBitrate steps:
-//Shows device selection dialog.
-//Initializes device and assign devNum.
-//Detects bitrate from list of possible bitrates.
-//if success, returns detected bitrate.
+// InitSelectDetectBitrate steps:
+// Shows device selection dialog.
+// Initializes device and assign devNum.
+// Detects bitrate from list of possible bitrates.
+// if success, returns detected bitrate.
 func (dev *Device) InitSelectDetectBitrate(devNum uint8, timeout time.Duration, bitrate []ixxatvci3.BitrateRegisterPair) (detected ixxatvci3.BitrateRegisterPair, err error) {
 
 	if nil == dev {
@@ -251,7 +251,7 @@ func (dev *Device) InitSelectDetectBitrate(devNum uint8, timeout time.Duration, 
 	return
 }
 
-//Stop stops receiving
+// Stop stops receiving
 func (dev *Device) Stop() {
 	if nil == dev {
 		return
@@ -264,7 +264,7 @@ func (dev *Device) Stop() {
 	ixxatvci3.CloseDevice(dev.number)
 }
 
-//GetBusLoad CAN bus load %
+// GetBusLoad CAN bus load %
 func (dev *Device) GetBusLoad(nDev uint8) uint8 {
 	if nil == dev {
 		return 0
@@ -273,7 +273,8 @@ func (dev *Device) GetBusLoad(nDev uint8) uint8 {
 	return st.LineStatus.BusLoad
 }
 
-/*Send msg to CAN.
+/*
+Send msg to CAN.
 If msg.ID <= 0x7FF, msg is 11-bit.
 If msg.ID > 0x7FF, msg is 29-bit.
 
@@ -297,8 +298,8 @@ func (dev *Device) Send(msg Message) (err error) {
 	return
 }
 
-//GetMsgChannelCopy returns channel with all messages received from CAN.
-//idx - channel index for use with CloseMsgChannelCopy().
+// GetMsgChannelCopy returns channel with all messages received from CAN.
+// idx - channel index for use with CloseMsgChannelCopy().
 func (dev *Device) GetMsgChannelCopy() (ch <-chan Message, idx uint) {
 	if nil == dev {
 		return
@@ -311,8 +312,8 @@ func (dev *Device) GetMsgChannelCopy() (ch <-chan Message, idx uint) {
 	return
 }
 
-//CloseMsgChannelCopy close msg channel.
-//idx is a channel index from GetMsgChannelCopy().
+// CloseMsgChannelCopy close msg channel.
+// idx is a channel index from GetMsgChannelCopy().
 func (dev *Device) CloseMsgChannelCopy(idx uint) {
 	if nil == dev {
 		return

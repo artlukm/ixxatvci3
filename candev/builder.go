@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/amdf/ixxatvci3"
+	"github.com/engaziwayo/ixxatvci3"
 )
 
 type builder interface {
 	Get() (dev *Device, err error)
 }
 
-//Builder for configuring candev.Device
+// Builder for configuring candev.Device
 type Builder struct {
 	builder
 	dev             Device
@@ -25,7 +25,7 @@ type Builder struct {
 	number          uint8
 }
 
-//Get candev.Device
+// Get candev.Device
 func (b *Builder) Get() (dev *Device, err error) {
 	var vcierr uint32
 
@@ -82,37 +82,38 @@ func (b *Builder) Get() (dev *Device, err error) {
 	return
 }
 
-//Timeout for bitrate detection. Only use with Detect or AutoDetect.
+// Timeout for bitrate detection. Only use with Detect or AutoDetect.
 func (b *Builder) Timeout(t time.Duration) *Builder {
 	b.detectTimeout = t
 	return b
 }
 
-//Number set device number (for multi-device configuration).
+// Number set device number (for multi-device configuration).
 func (b *Builder) Number(number uint8) *Builder {
 	b.number = number
 	return b
 }
 
-//Speed set speed.
+// Speed set speed.
 func (b *Builder) Speed(pair ixxatvci3.BitrateRegisterPair) *Builder {
 	b.speed = pair
 	return b
 }
 
-//Btr0 register BTR0. Use with Btr1()
+// Btr0 register BTR0. Use with Btr1()
 func (b *Builder) Btr0(val byte) *Builder {
 	b.speed.Btr0 = val
 	return b
 }
 
-//Btr1 register BTR1. Use with Btr0()
+// Btr1 register BTR1. Use with Btr0()
 func (b *Builder) Btr1(val byte) *Builder {
 	b.speed.Btr1 = val
 	return b
 }
 
-/*Mode set device mode.
+/*
+Mode set device mode.
 Possible values:
 "11bit" or "standard" or "base",
 "29bit" or "extended",
@@ -126,20 +127,20 @@ func (b *Builder) Mode(mode string) *Builder {
 	return b
 }
 
-//SelectDevice shows dialog if true
+// SelectDevice shows dialog if true
 func (b *Builder) SelectDevice(selectDevice bool) *Builder {
 	b.selectDevice = selectDevice
 	return b
 }
 
-//Detect bitrate from list of possble bitrates
+// Detect bitrate from list of possble bitrates
 func (b *Builder) Detect(bitrates []ixxatvci3.BitrateRegisterPair) *Builder {
 	b.wantBitrateList = bitrates
 	b.detectBitrate = true
 	return b
 }
 
-//AutoDetect from common bitrates
+// AutoDetect from common bitrates
 func (b *Builder) AutoDetect() *Builder {
 	b.wantBitrateList = []ixxatvci3.BitrateRegisterPair{
 		ixxatvci3.Bitrate10kbps,

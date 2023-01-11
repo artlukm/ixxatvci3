@@ -1,8 +1,14 @@
 module github.com/engaziwayo/ixxatvci3
 
-go 1.12
+go 1.19
+
+require go.einride.tech/can v0.5.3
 
 require (
-	go.einride.tech/can v0.2.2
-	golang.org/x/sys v0.0.0-20200728102440-3e129f6d46b1 // indirect
+	github.com/golang/mock v1.6.0 // indirect
+	golang.org/x/mod v0.7.0 // indirect
+	golang.org/x/net v0.4.0 // indirect
+	golang.org/x/sync v0.1.0 // indirect
+	golang.org/x/sys v0.4.0 // indirect
+	golang.org/x/tools v0.4.0 // indirect
 )
